@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <style type="text/css">
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="width: 500px">
+        <h1 align="center">用户登录</h1>
+        <div class="text-right">
+            <a href="regist.html" class="btn btn-info">注册</a>
+        </div>
+        <form>
+            <div class="form-group">
+                <label for="myusername">用户名</label>
+                <input type="text" required class="form-control" id="myusername" placeholder="请输入用户名">
+            </div>
+            <div class="form-group">
+                <label for="mypassword">密码</label>
+                <input type="password" required class="form-control" id="mypassword" placeholder="请输入密码">
+            </div>
+            <div class="form_group">
+                <div>
+                    <label>完成验证：</label>
+                    <div id="captcha">
+                        <p id="wait">正在加载验证码......</p>
+                    </div>
+                </div>
+                <br>
+                <p id="notice" class="hide">请先完成验证</p>
+            </div>
+            <div style="text-align: center">
+                <button type="submit" id="submit" class="btn btn-default">登录</button>
+            </div>
+
+        </form>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <!-- 引入 极验官方gt.js，使用其中提供的 initGeetest 初始化函数 -->
+    <script src="https://static.geetest.com/static/tools/gt.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/layer.js"></script>
+    <script type="text/javascript" src="js/mylayer.js"></script>
+    <script type="text/javascript" src="js/cookie.js"></script>
+    <script type="text/javascript">
+        //加载第三方验证码的实现
+        var result = null;
+        var handler = function (captchaObj) {
+            $("#submit").click(function (e) {
+                result = captchaObj.getValidate();
+                if (!result) {
+                    $("#notice").show();
+                    setTimeout(function () {
+                        $("#notice").hide();
+                    }, 2000);
+                    e.preventDefault();
+                }else{
+                    console.log("前台验证成功");
+                    console.log(result);
+                }
+            });
+            // 将验证码加到id为captcha的元素里，同时会有三个input的值用于表单提交
+            captchaObj.appendTo("#captcha");
+            captchaObj.onReady(function () {
+                $("#wait").hide();
+            });
+        };
+
+        //刚运行调用一次从服务器获取验证码在客户端进行验证
+        getCheckCode();
+        function getCheckCode(){
+            $.ajax({
+                url: "register?t=" + (new Date()).getTime(), // 加随机数防止缓存
+                type: "get",
+                dataType: "json",
+                success: function (data) {
+                    // 调用 initGeetest 初始化参数
+                    // 参数1：配置参数
+                    // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它调用相应的接口
+                    initGeetest({
+                        gt: data.gt,
+                        challenge: data.challenge,
+                        new_captcha: data.new_captcha, // 用于宕机时表示是新验证码的宕机
+                        offline: !data.success, // 表示用户后台检测极验服务器是否宕机，一般不需要关注
+                        product: "float", // 产品形式，包括：float，popup
+                        width: "100%"
+                    }, handler);
+                }
+            });
+        }
+
+    </script>
+    <script type="text/javascript">
+        $("form").submit(function () {
+            mylayer.showLoading();
+            $.ajax({
+                type:"POST",
+                url:"./queryUserByName",
+                data:{
+                    name:$("#myusername").val(),
+                    password:$("#mypassword").val(),
+                    geetest_challenge:result.geetest_challenge,
+                    geetest_validate:result.geetest_validate,
+                    geetest_seccode:result.geetest_seccode
+                },
+                success:function (data) {
+                    console.log(data);
+                    mylayer.closeLoading();
+                    if(data.retcode=="0"){
+                        //console.log("登录成功了页面需要跳转");
+
+                        cookie.set("user",JSON.stringify(data.data));
+
+                        mylayer.showCallBackMessage("登录成功了 页面需要跳转",function () {
+                            window.location.href = "indexHome.html";
+                        });
+                    }else{
+                        //验证发生错误了 之前的验证码已经失效了 需要更新新的验证码
+                        //禁用按钮不可点击多次
+                        //$("#submit").prop("disabled","disabled");
+                        $("#captcha").empty();
+                        //验证失败获取新的验证码
+                        getCheckCode();
+                        mylayer.showError(data.data);
+                        //alert(data.data);
+                    }
+                },
+                error:function (xhr,error,status) {
+                    console.log(error);
+                    $("#captcha").empty();
+                    //验证失败获取新的验证码
+                    getCheckCode();
+                    mylayer.showError(data.data);
+                    //alert(error);
+                }
+            });
+            return false;
+        });
+
+    </script>
+</body>
+</html>

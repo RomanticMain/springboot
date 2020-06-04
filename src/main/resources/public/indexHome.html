@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品主页</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <script src="./js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/cookie.js"></script>
+    <script type="text/javascript" src="js/mylayer.js"></script>
+    <script type="text/javascript" src="js/layer.js"></script>
+    <style type="text/css">
+        .content{
+            text-align: center;
+            margin-top: 15px;
+        }
+        .myCart{
+            position: fixed;
+            bottom: 30px;
+            right: 10px;
+        }
+        .myCart a{
+            font-size: 40px;
+        }
+    </style>
+    <!--<script type="text/javascript">
+        mylayer.showLoading();
+    </script>-->
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center;">我的网站首页</h1>
+        <div class="topheader">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav" id="category">
+                            <!--<li class="active"><a href="#">手机数码<span class="sr-only">(current)</span></a></li>-->
+                        </ul>
+                        <ul id="loginPane1" class="nav navbar-nav navbar-right" style="line-height: 50px;">
+                            <li>
+                                <button class="btn btn-info" onclick="goToLoginPage()">登录</button>
+                            </li>
+                            <li>
+                                <button class="btn btn-info" style="margin-left: 10px;" onclick="goToRegistPage()">注册</button>
+                            </li>
+                        </ul>
+                        <ul id="loginOutPane1" class="nav navbar-nav navbar-right" style="line-height: 50px;">
+                            <li>
+                                当前用户：<span id="currentUser"></span>
+                            </li>
+                            <li>
+                                <button class="btn btn-info" style="margin-left: 10px;" onclick="goToLoginOut()">注销</button>
+                            </li>
+                        </ul>
+                        <form class="navbar-form navbar-right">
+                            <div class="form-group">
+                                <input type="text" id="searchInput" class="form-control" placeholder="请输入查询的内容">
+                            </div>
+                            <button type="submit" class="btn btn-default">搜索</button>
+                        </form>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                </ol>
+
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner" role="listbox">
+                    <div class="item active">
+                        <img src="./roll/product1.jpg" alt="...">
+                        <div class="carousel-caption">
+                            ...
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img src="./roll/product2.jpg" alt="...">
+                        <div class="carousel-caption">
+                            ...
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img src="./roll/product3.jpg" alt="...">
+                        <div class="carousel-caption">
+                            ...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+        <div class="content" id="content">
+            <!--<div class="col-md-3">
+                <img src="./images/phone.jpg" alt="" width="180px" height="270px">
+                <h4>手机</h4>
+                <p>
+                    <span style="margin-right: 15px;">价格：5888.00元</span>
+                    <a class="btn btn-danger">
+                        <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+                    </a>
+                </p>
+            </div>
+            <div class="col-md-3">
+                <img src="./images/phone.jpg" alt="" width="180px" height="270px">
+                <h4>手机</h4>
+                <p>
+                    <span style="margin-right: 15px;">价格：5888.00元</span>
+                    <a class="btn btn-danger">
+                        <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+                    </a>
+                </p>
+            </div>
+            <div class="col-md-3">
+                <img src="./images/phone.jpg" alt="" width="180px" height="270px">
+                <h4>手机</h4>
+                <p>
+                    <span style="margin-right: 15px;">价格：5888.00元</span>
+                    <a class="btn btn-danger">
+                        <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+                    </a>
+                </p>
+            </div>
+            <div class="col-md-3">
+                <img src="./images/phone.jpg" alt="" width="180px" height="270px">
+                <h4>手机</h4>
+                <p>
+                    <span style="margin-right: 15px;">价格：5888.00元</span>
+                    <a class="btn btn-danger">
+                        <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+                    </a>
+                </p>
+            </div>-->
+        </div>
+        <div class="row" id="bottom" style="display: none;">
+            <h3><span class="label label-default" style="width: 100%;">已经到底了</span></h3>
+        </div>
+
+        <div class="myCart">
+            <div style="position: relative">
+                <a href="myCart.html" class="glyphicon glyphicon-shopping-cart"></a>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        mylayer.showLoading();
+        if(cookie.get("user")!=null&&cookie.get("user")!=""){
+            $("#loginPane1").hide();
+            $("#loginOutPane1").show();
+            console.log("用户已经登录");
+            var userJSON = cookie.get("user");
+            var user = JSON.parse(userJSON);
+            console.log(user);
+            $("#currentUser").html(user.u_name);
+        }else{
+            $("#loginPane1").show();
+            $("#loginOutPane1").hide();
+            console.log("用户没有登录");
+        }
+        //网站默认显示第一个分类
+
+        var current_id = 1;
+        var start = 0;//分页开始的位置
+        var length = 4;//每页8条数据
+        $.ajax({
+            type:"GET",
+            url:"./getCategoryJSON",
+            success:function (data) {
+                mylayer.closeLoading();
+                //console.log(data);
+                if(data.retcode=="0"){
+                    //数据正常返回
+                    var ul = $("#category");
+                    for(var i = 0; i < data.data.length; i++){
+                        var cate = data.data[i];
+                        var aElement = $('<a href="javascript:void(0)" onclick="getProductByCateId('+cate.t_id+')">'+cate.t_name+'</a>');
+                        var li = null;
+                        if(current_id==cate.t_id){
+                            li = $("<li class='active' id="+cate.t_id+"></li>");
+                        }else{
+                            li = $("<li id="+cate.t_id+"></li>");
+                        }
+                        li.append(aElement);
+                        ul.append(li);
+                    }
+
+                    //请求完分类以后 需要请求该分类下的商品信息
+                    //根据分类的id请求当前分类下的商品信息
+                    loadProduct(current_id,start,length);
+                }else{
+                    alert(data.data);
+                }
+            },
+            error:function (xhr,error,status) {
+                mylayer.closeLoading();
+                console.log(error);
+            }
+        });
+
+        //监听屏幕的滚动 当屏幕滚动到一定程度后触发方法 自动加载下一页的内容
+        var loading_switch = true;
+        $(window).scroll(function () {
+            //文档的高度
+            var document_height = $(document).outerHeight();
+            //console.log("document_height:"+document_height);
+            //屏幕的高度
+            var window_height = $(window).height();
+            //console.log("window_height:"+window_height);
+            //滚动的距离
+            var scroll_height = $(window).scrollTop();
+            //console.log("scroll_height:"+scroll_height);
+            if(document_height-window_height-scroll_height<100){
+                if(loading_switch){
+                    loading_switch = false;
+                    console.log("加载下一页数据");
+                    start += length;
+                    loadProduct(current_id,start,length);
+                }
+            }
+        });
+
+
+        function getProductByCateId(cate_id){
+            console.log(cate_id);
+            if(current_id!=cate_id){
+                current_id = cate_id;
+                $("li.active").removeClass("active");
+                $("li#"+cate_id).addClass("active");
+                $("#content").empty();
+                start = 0;
+                $("#bottom").hide();
+                loadProduct(current_id,start,length);
+            }else{
+                console.log("您点击的是同一个分类");
+            }
+        }
+        function loadProduct(current_id,start,length){
+            mylayer.showLoading();
+
+            $.ajax({
+                type:"GET",
+                data:{
+                    t_id:current_id,
+                    start:start,
+                    length:length
+                },
+                url:"./getProductsByCateIdJSON",
+                success:function(data){
+                    mylayer.closeLoading();
+                    //console.log(data);
+                    if(data.retcode=="0"){
+                        console.log(data);
+                        var content = $("#content");
+                        for(var i = 0; i < data.data.length; i++){
+                            var product = data.data[i];
+                            var div = $('<div class="col-md-3">');
+                            var aHtml = $("<a href='productDetail.html?pro_id="+product.pro_id+"'></a>");
+                            var image = $('<img src="./images/'+product.pro_image+'" width="180px" height="270px">');
+                            aHtml.append(image);
+                            var title = $('<h4>'+product.pro_name+'</h4>');
+                            var p = $('<p>');
+                            var price = $('<span style="margin-right: 10px;">价格：'+product.pro_price+'元</span>');
+                            var aElement = $('<a class="btn btn-danger" href="javascript:void(0)" onclick=\'addProductToCart('+JSON.stringify(product)+')\'>');
+                            var cart = $('<span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>');
+                            p.append(price);
+                            aElement.append(cart);
+                            p.append(aElement);
+                            div.append(aHtml);
+                            div.append(title);
+                            div.append(p);
+                            content.append(div);
+                        }
+                        loading_switch = true;
+                    }else{
+                        //mylayer.showError(data.data);
+                        //alert(data.data);
+                        $("#bottom").show();
+                    }
+
+                },
+                error:function (xhr,error,status) {
+                    mylayer.closeLoading();
+                    mylayer.showError(error);
+                    console.log(error);
+                }
+            })
+        }
+        //跳转到登录界面
+        function goToLoginPage() {
+            window.location.href = "login.html";
+        }
+        //跳转到注册界面
+        function goToRegistPage() {
+            window.location.href = "regist.html";
+        }
+        //注销登录
+        function goToLoginOut() {
+            //注销时删除cookie 再刷新一下界面 就变成登出状态
+            layer.confirm("您确定要退出吗?",{icon:3,title:'提示'},function(index){
+                cookie.deleteCookie("user");
+                window.location.href = "indexHome.html";
+                layer.close(index);
+            });
+        }
+    </script>
+    <script type="text/javascript">
+        $("form").submit(function () {
+            if($("#searchInput").val()!=''){
+                window.location.href = "search.html?search="+$("#searchInput").val();
+            }else{
+                mylayer.showError("请输入搜索内容");
+            }
+            return false;
+        });
+    </script>
+    <script type="text/javascript">
+        var cartList = {};
+        var oldCartList = localStorage.getItem("cartList");
+        if(oldCartList!=null&&oldCartList!='{}'){
+            cartList = JSON.parse(oldCartList);
+        }
+        function addProductToCart(product) {
+            //console.log(product);
+            //先判断购物车里有无商品 如果有则数量+1
+            if(cartList[product.pro_id]){
+                cartList[product.pro_id].pro_num++;
+            }else{
+                //第一次添加商品
+                cartList[product.pro_id] = {
+                    pro_id:product.pro_id,
+                    pro_name:product.pro_name,
+                    pro_price:product.pro_price,
+                    pro_image:product.pro_image,
+                    pro_num:1
+                }
+            }
+            console.log(cartList);
+            localStorage.setItem("cartList",JSON.stringify(cartList));
+            mylayer.showMessage("添加成功了");
+        }
+    </script>
+</body>
+</html>

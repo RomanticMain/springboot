@@ -1,0 +1,20 @@
+server:
+  port: 9000
+  servlet:
+    context-path: /book
+person:
+  name: zhangsan
+  age: 16
+logging:
+  level:
+    com.wtbu.day01springdemo: trace
+file:
+  staticAccessPath: /images/**
+  uploadPath: C:\Users\阮晨航\Desktop\upload\
+spring:
+  datasource:
+    username: root
+    password: 854138
+    url: jdbc:mysql://localhost:3306/javaee?useSSL = false&useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+

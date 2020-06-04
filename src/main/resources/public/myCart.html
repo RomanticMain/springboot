@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <script src="./js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/cookie.js"></script>
+    <script type="text/javascript" src="js/mylayer.js"></script>
+    <script type="text/javascript" src="js/layer.js"></script>
+    <title>购物车</title>
+    <style type="text/css">
+        .price{
+            color:red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center"><span id="title"></span>购物车</h1>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="javascript:void(0)">购物车详情</a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="javascript:location.href = 'indexHome.html'">返回首页</a>
+                        </li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <div class="row" id="nocontent" style="display: none">
+            <h1>购物车是空的</h1>
+        </div>
+        <div class="row" id="contentPanel" style="display: none">
+            <div class="col-md-12">
+                <table class="table table-bordered" id="content">
+
+                </table>
+                <div id="text-footer">
+                    <div class="text-right" style="font-size: 20px">
+                        <span>总共选择了<span id="totalCount">0</span>件商品</span>
+                        <span>总共：<span id="totalPrice">￥：0.00</span></span>
+                        <button class="btn btn-danger btn-lg" id="submitBtn">去结算</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        console.log(localStorage.getItem("cartList"));
+        var carListStr = localStorage.getItem("cartList");
+        var cartList = null;
+        if(carListStr!=null&&carListStr!="{}"){
+            $("#nocontent").hide();
+            $("#contentPanel").show();
+            cartList = JSON.parse(carListStr);
+            var content = $("#content");
+            content.empty();
+            var thead = $(
+                "<tr><th><input id='selectAll' type='checkbox'>全选</th>"+
+                "<th>商品id</th>"+
+                "<th>商品名称</th>"+
+                "<th>商品图片</th>"+
+                "<th>商品价格</th>"+
+                "<th>商品数量</th>"+
+                "<th>小计</th>"+
+                "<th>操作</th>"+
+                    "</tr>"
+            );
+            content.append(thead);
+            for(var key in cartList){
+                var product = cartList[key];
+                var tr = $("<tr>"+
+                "<td><input type='checkbox' name='selectOne' onclick='bindSelectOneChecked()'></td>"+
+                    "<td>"+product.pro_id+"</td>"+
+                    "<td>"+product.pro_name+"</td>"+
+                    "<td><img src='./images/"+product.pro_image+"' style='width: 50px'></td>"+
+                    "<td><span class='price'>￥：</span>"+product.pro_price+"</td>"+
+                    "<td><button class='small-button' onclick='addProduct("+product.pro_id+",this)'>+</button>"+
+                        "<input class='myCenter' tempId='"+product.pro_id+"' type='text' id='myPrice' size='2' value='"+product.pro_num+"'>"+
+                    "<button class='small-button' onclick='subProduct("+product.pro_id+",this)'>-</button></td>"+
+                    "<td>￥：" +(product.pro_num*product.pro_price).toFixed(2)
+                    +"</td>"+
+                        "<td><a href='javascript:void(0)' onclick='deleteProduct("+product.pro_id+",this)'>删除</a></td>"+
+                        "</tr>"
+                );
+                content.append(tr);
+            }
+        }else{
+            $("#nocontent").show();
+            $("#contentPanel").hide();
+        }
+    </script>
+    <script type="text/javascript">
+        function addProduct(pro_id,current_obj) {
+            console.log(pro_id);
+            console.log(current_obj);
+            cartList[pro_id].pro_num++;
+            //更新input数值
+            $(current_obj).next().val(cartList[pro_id].pro_num);
+            //更新小计
+            var subTotal = cartList[pro_id].pro_num*cartList[pro_id].pro_price;
+            $(current_obj).parent().next().html("￥："+subTotal.toFixed(2));
+        }
+        function subProduct(pro_id,current_obj) {
+            var current_num = cartList[pro_id].pro_num;
+            if(current_num>1){
+                cartList[pro_id].pro_num--;
+                $(current_obj).prev().val(cartList[pro_id].pro_num);
+                var subTotal = cartList[pro_id].pro_num*cartList[pro_id].pro_price;
+                $(current_obj).parent().next().html("￥："+subTotal.toFixed(2));
+            }else {
+                layer.confirm("您确定要删除该商品吗?",{icon:3,title:'提示'},function(index) {
+                    delete cartList[pro_id];//删除内存里面购物车数据
+                    $(current_obj).parent().parent().remove();
+                    layer.close(index);
+                });
+            }
+        }
+        function deleteProduct(pro_id,current_obj) {
+            layer.confirm("您确定要删除该商品吗?",{icon:3,title:'提示'},function(index) {
+                delete cartList[pro_id];
+                $(current_obj).parent().parent().remove();
+                layer.close(index);
+            });
+        }
+        $(".myCenter").bind("input propertychange",function () {
+            var tempPrice = $(this).val();
+            var r = /^\+?[1-9][0-9]*$/;
+            console.log(typeof tempPrice);
+            var pro_id = $(this).attr("tempId");
+            if(r.test(tempPrice)){
+                console.log(tempPrice);
+                var subTotal = parseInt(tempPrice)*cartList[pro_id].pro_price;
+                $(this).parent().next().html("￥："+subTotal.toFixed(2));
+            }else{
+                var that = this;
+                mylayer.showErrorCallBackMessage("你输入的不是数字",function () {
+
+                    $(that).val(cartList[pro_id].pro_num);
+                });
+            }
+
+        });
+    </script>
+    <script type="text/javascript">
+        $("input[name='selectOne']").on("change",function () {
+            //计算总价
+            countTotalPrice();
+        });
+
+        //全选点击效果
+        $("#selectAll").on("change",function () {
+            if($(this).prop("checked")){
+                $('td input[type="checkbox"]').prop('checked',true);
+                countTotalPrice();
+            }else{
+                $('td input[type="checkbox"]').prop('checked',false);
+                $("#totalCount").html("0");
+                $("#totalPrice").html("￥：0.00");
+            }
+        });
+
+        //计算总价
+        function countTotalPrice() {
+            var checkBoxes = $("input[name='selectOne']");
+            var priceSpan = $('td.price');
+            var countInputs = $("input.myCenter");
+            var totalCount = 0;
+            var totalPrice = 0;
+            for(var i = 0; i < checkBoxes.length; i++){
+                if($(checkBoxes[i]).prop("checked")){
+                    var price = parseFloat($(priceSpan[i]).text());
+                    var count = parseInt($(countInputs[i]).val());
+                    totalCount += count;
+                    totalPrice += price*count;
+                    var temp_pro_id = $(checkBoxes[i]).parent().next().text();
+                    console.log(temp_pro_id);
+                    selectCart[temp_pro_id] = cartList[temp_pro_id];
+                }
+            }
+            $("#totalCount").html(totalCount);
+            $("#totalPrice").html("￥："+totalPrice.toFixed(2));
+        }
+    </script>
+</body>
+</html>

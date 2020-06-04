@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<h1>我的商品信息页面</h1>
+<h4>亲爱的<span th:text="${name}"></span></h4>
+<table class="table table-bordered">
+    <tr>
+        <th>商品id</th>
+        <th>商品名称</th>
+        <th>商品图片</th>
+        <th>商品价格</th>
+    </tr>
+    <tr th:each="product:${products}">
+        <td th:text="${product.pro_id}"></td>
+        <td th:text="${product.pro_name}"></td>
+        <td>
+            <img th:src="@{/images/}+${product.pro_image}" width="150px" alt="">
+        </td>
+        <td th:text="${product.pro_price}"></td>
+    </tr>
+</table>
+</body>
+</html>

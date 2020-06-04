@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+</head>
+<body>
+    <h1>我的商品主页</h1>
+    <div class="container">
+
+    </div>
+    <script type="text/javascript">
+        $.ajax({
+            type:"GET",
+            url:"./showProductsJSON",
+            success:function (data) {
+                console.log(data);
+                var table=$("<table class='table table-bordered'>");
+                var thead=$("<tr>\n" +
+                    "        <th>商品id</th>\n" +
+                    "        <th>商品名称</th>\n" +
+                    "        <th>商品图片</th>\n" +
+                    "        <th>商品价格</th>\n" +
+                    "    </tr>");
+                table.append(thead);
+                $(".container").append(table);
+                for(var i=0;i<data.length;i++){
+                    var tr=$("<tr>");
+                    var td_id=$("<td>"+data[i].pro_id+"</td>");
+                    var td_name=$("<td>"+data[i].pro_name+"</td>");
+                    var td_price=$("<td>"+data[i].pro_price+"</td>");
+                    tr.append(td_id);
+                    tr.append(td_name);
+                    tr.append(td_price);
+                    table.append(tr);
+                }
+            },
+            error:function (xhr,error,status) {
+                console.log(error);
+            }
+        })
+
+    </script>
+</body>
+</html>

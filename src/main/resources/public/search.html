@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>搜索结果</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <script src="./js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/cookie.js"></script>
+    <script type="text/javascript" src="js/mylayer.js"></script>
+    <script type="text/javascript" src="js/layer.js"></script>
+    <style type="text/css">
+        #result{
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center">搜索<span id="result"></span>结果页面</h1>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="javascript:void(0)">商品列表</a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="javascript:location.href = 'indexHome.html'">返回首页</a>
+                        </li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <div class="row" id="content">
+
+        </div>
+        <div class="row" id="nocontent" style="display: none;color: red">
+            <h2 style="text-align: center">暂无搜索结果</h2>
+        </div>
+        <div class="row" id="bottom" style="display: none;color: red">
+            <h2 style="text-align: center">没有更多商品</h2>
+        </div>
+    </div>
+    <script type="text/javascript">
+        mylayer.showLoading();
+        var start = 0;
+        var length = 8;
+        function getSearchContent(content,start,length) {
+            mylayer.showLoading();
+            $.ajax({
+                type:"GET",
+                url:"./searchContent",
+                data:{
+                    search:content,
+                    start:start,
+                    length:length
+                },
+                success:function (data) {
+                    mylayer.closeLoading();
+                    console.log(data);
+                    if(data.retcode=="0"){
+                        var content = $("#content");
+                        for(var i = 0; i < data.data.length; i++){
+                            var product = data.data[i];
+                            var div = $('<div class="col-md-3">');
+                            var image = $('<img src="./images/'+product.pro_image+'" width="180px" height="270px">');
+                            var title = $('<h4>'+product.pro_name+'</h4>');
+                            var p = $('<p>');
+                            var price = $('<span style="margin-right: 10px;">价格：'+product.pro_price+'元</span>');
+                            var aElement = $('<a class="btn btn-danger">');
+                            var cart = $('<span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>');
+                            p.append(price);
+                            aElement.append(cart);
+                            p.append(aElement);
+                            div.append(image);
+                            div.append(title);
+                            div.append(p);
+                            content.append(div);
+                        }
+                        loading_switch = true;
+                    }else if(data.retcode=="1"){
+                        if(start==0){
+                            $("#bottom").hide();
+                            $("#nocontent").show();
+                        }else{
+                            $("#bottom").show();
+                            $("#nocontent").hide();
+                        }
+                    }else{
+                        mylayer.showError(data.data);
+                    }
+                },
+                error:function (xhr,error,status) {
+                    mylayer.closeLoading();
+                    console.log(error);
+                    mylayer.showError(error);
+                }
+            })
+        }
+    </script>
+    <script type="text/javascript">
+        var loading_switch = true;
+        function startLoadMoreProduct() {
+            //监听屏幕的滚动 当屏幕滚动到一定程度后触发方法 自动加载下一页的内容
+            $(window).scroll(function () {
+                //文档的高度
+                var document_height = $(document).outerHeight();
+                //console.log("document_height:"+document_height);
+                //屏幕的高度
+                var window_height = $(window).height();
+                //console.log("window_height:"+window_height);
+                //滚动的距离
+                var scroll_height = $(window).scrollTop();
+                //console.log("scroll_height:"+scroll_height);
+                if(document_height-window_height-scroll_height<100){
+                    if(loading_switch){
+                        loading_switch = false;
+                        console.log("加载下一页数据");
+                        start += length;
+                        getSearchContent(searchContent,start,length);
+                    }
+                }
+            });
+        }
+    </script>
+    <script type="text/javascript">
+        var searchContent = mylayer.getQueryString("search");
+        if(searchContent!=null){
+            $("#result").html(searchContent);
+            getSearchContent(searchContent,start,length);
+            startLoadMoreProduct();
+        }
+        else{
+            mylayer.showError("搜索条件不可为空");
+        }
+    </script>
+</body>
+</html>
